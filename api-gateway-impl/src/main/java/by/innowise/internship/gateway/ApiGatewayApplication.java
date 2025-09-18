@@ -2,8 +2,10 @@ package by.innowise.internship.gateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 @SpringBootApplication
+@ConfigurationPropertiesScan("by.innowise.internship.gateway.config")
 public class ApiGatewayApplication {
 
     public static void main(String[] args) {
