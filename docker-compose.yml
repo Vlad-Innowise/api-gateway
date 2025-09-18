@@ -1,0 +1,144 @@
+services:
+
+  api-gateway:
+    build: ./api-gateway-impl
+    environment:
+      SPRING_PROFILES_ACTIVE: "${APPLICATION_PROFILE}"
+      AUTH_SERVICE_URL: 'http://auth-service:8080'
+      USER_SERVICE_URL: 'http://user-service:8080'
+      ORDER_SERVICE_URL: 'http://order-service:8080'
+      JAVA_TOOL_OPTIONS: '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5000'
+    ports:
+      - '8080:8080'
+      - '5000:5000'
+    expose:
+      - '8080' # application api
+      - '5000' # debug
+    restart: 'always'
+    depends_on:
+      - 'auth-service'
+      - 'user-service'
+      - 'order-service'
+
+  auth-service:
+    image: "ghcr.io/${GITHUB_INNOWISE_USERNAME}/${AUTH_SERVICE_GH_REPO_NAME}/${AUTH_SERVICE_IMAGE_NAME}"
+    environment:
+      SPRING_PROFILES_ACTIVE: "${APPLICATION_PROFILE}"
+      DB_URL: "jdbc:postgresql://auth-service-db:5432/${AUTH_SERVICE_DB_NAME}"
+      DB_USER: "${DB_USER}"
+      DB_PASSWORD: "${DB_PASSWORD}"
+      GITHUB_INNOWISE_USERNAME: "${GITHUB_INNOWISE_USERNAME}"
+      GITHUB_INNOWISE_TOKEN: "${GITHUB_INNOWISE_TOKEN}"
+      AUTH_SERVICE_GH_REPO_NAME: "${AUTH_SERVICE_GH_REPO_NAME}"
+      AUTH_SERVICE_IMAGE_NAME: "${AUTH_SERVICE_IMAGE_NAME}"
+      TOKEN_SECRET: "${TOKEN_SECRET}"
+      JAVA_TOOL_OPTIONS: '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005'
+    ports:
+#      - '9000:8080'
+      - '5005:5005'
+    expose:
+#      - '9000' # application api
+      - '5005' # debug
+    restart: 'always'
+    depends_on:
+      - 'auth-service-db'
+
+  user-service:
+    image: "ghcr.io/${GITHUB_INNOWISE_USERNAME}/${USER_SERVICE_GH_REPO_NAME}/${USER_SERVICE_IMAGE_NAME}"
+    environment:
+      SPRING_PROFILES_ACTIVE: "${APPLICATION_PROFILE}"
+      DB_URL: "jdbc:postgresql://user-service-db:5432/${USER_SERVICE_DB_NAME}"
+      DB_USER: "${DB_USER}"
+      DB_PASSWORD: "${DB_PASSWORD}"
+      REDIS_HOST: "redis-db"
+      REDIS_PORT: '6379'
+      GITHUB_INNOWISE_USERNAME: "${GITHUB_INNOWISE_USERNAME}"
+      GITHUB_INNOWISE_TOKEN: "${GITHUB_INNOWISE_TOKEN}"
+      USER_SERVICE_GH_REPO_NAME: "${USER_SERVICE_GH_REPO_NAME}"
+      USER_SERVICE_IMAGE_NAME: "${USER_SERVICE_IMAGE_NAME}"
+      TOKEN_SECRET: "${TOKEN_SECRET}"
+      JAVA_TOOL_OPTIONS: '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5006'
+    ports:
+#      - '8090:8080'
+      - '5006:5006'
+    expose:
+#      - '8090' # application api
+      - '5006' # debug
+    restart: 'always'
+    depends_on:
+      - 'user-service-db'
+      - 'redis-db'
+
+  order-service:
+    image: "ghcr.io/${GITHUB_INNOWISE_USERNAME}/${ORDER_SERVICE_GH_REPO_NAME}/${ORDER_SERVICE_IMAGE_NAME}"
+    environment:
+      SPRING_PROFILES_ACTIVE: "${APPLICATION_PROFILE}"
+      DB_URL: "jdbc:postgresql://order-service-db:5432/${ORDER_SERVICE_DB_NAME}"
+      DB_USER: "${DB_USER}"
+      DB_PASSWORD: "${DB_PASSWORD}"
+      GITHUB_INNOWISE_USERNAME: "${GITHUB_INNOWISE_USERNAME}"
+      GITHUB_INNOWISE_TOKEN: "${GITHUB_INNOWISE_TOKEN}"
+      ORDER_SERVICE_GH_REPO_NAME: "${ORDER_SERVICE_GH_REPO_NAME}"
+      ORDER_SERVICE_IMAGE_NAME: "${ORDER_SERVICE_IMAGE_NAME}"
+      TOKEN_SECRET: "${TOKEN_SECRET}"
+      USER_SERVICE_URL: 'http://user-service:8080'
+      JAVA_TOOL_OPTIONS: '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5007'
+    ports:
+#      - '9009:8080'
+      - '5007:5007'
+    expose:
+#      - '9009' # application api
+      - '5007' # debug
+    restart: 'always'
+    depends_on:
+      - 'order-service-db'
+
+  auth-service-db:
+    image: 'postgres:17-alpine'
+    environment:
+      POSTGRES_USER: "${DB_USER}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+      POSTGRES_DB: "${AUTH_SERVICE_DB_NAME}"
+    ports:
+      - '7777:5432'
+    volumes:
+      - 'pg-auth-service-vol:/var/lib/postgresql/data'
+    restart: 'always'
+
+  user-service-db:
+    image: 'postgres:17-alpine'
+    environment:
+      POSTGRES_USER: "${DB_USER}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+      POSTGRES_DB: "${USER_SERVICE_DB_NAME}"
+    ports:
+      - '8888:5432'
+    volumes:
+      - 'pg-user-service-vol:/var/lib/postgresql/data'
+    restart: 'always'
+
+  redis-db:
+    image: 'redis:7.2.10-alpine'
+    ports:
+      - '6379:6379'
+    volumes:
+      - 'redis-user-service-vol:/data'
+    restart: 'always'
+
+  order-service-db:
+    image: 'postgres:17-alpine'
+    environment:
+      POSTGRES_USER: "${DB_USER}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+      POSTGRES_DB: "${ORDER_SERVICE_DB_NAME}"
+    ports:
+      - '6666:5432'
+    volumes:
+      - 'pg-order-service-vol:/var/lib/postgresql/data'
+    restart: 'always'
+
+volumes:
+  pg-auth-service-vol:
+  pg-user-service-vol:
+  pg-order-service-vol:
+  redis-user-service-vol:
