@@ -4,3 +4,10 @@ spring:
 
   profiles:
     active: "${APPLICATION_PROFILE}"
+
+application:
+  gateway:
+    services:
+      user-service: "${USER_SERVICE_URL}"
+      auth-service: "${AUTH_SERVICE_URL}"
+      order-service: "${ORDER_SERVICE_URL}"
