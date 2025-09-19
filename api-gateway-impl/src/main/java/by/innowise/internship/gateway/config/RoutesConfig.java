@@ -29,7 +29,7 @@ public class RoutesConfig {
                                .uri(serviceProperty.getServices().get(USER_SERVICE_PROPERTY)))
 
                       .route("auth-service", r ->
-                              r.path("/token/refresh", "/authenticate")
+                              r.path("/token/refresh", "/auth/login")
                                .uri(serviceProperty.getServices().get(AUTH_SERVICE_PROPERTY)))
 
                       .route("order-service-items", r ->
