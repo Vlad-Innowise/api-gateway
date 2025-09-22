@@ -36,7 +36,7 @@ import static by.innowise.internship.gateway.config.InternalServiceProperties.AU
 public class TokenValidationGlobalFilter implements GlobalFilter, Ordered {
 
     private static final String JWT_AUTH_HEADER_PREFIX = "Bearer ";
-    private static final List<String> WHITELIST_PATHS = List.of("/auth/login", "/auth/register");
+    private static final List<String> WHITELIST_PATHS = List.of("/api/v1/auth/login", "/api/v1/auth/register");
     private final WebClient webClient;
     private final InternalServiceProperties serviceProperty;
     private final AntPathMatcher matcher = new AntPathMatcher();
@@ -76,6 +76,7 @@ public class TokenValidationGlobalFilter implements GlobalFilter, Ordered {
 
     public boolean pathIsWhitelisted(ServerWebExchange exchange) {
         String path = exchange.getRequest().getPath().value();
+        log.info("Incoming path to check against whitelisted paths: {}", path);
         return WHITELIST_PATHS.stream()
                               .anyMatch(urlPattern -> matcher.match(urlPattern, path));
     }
