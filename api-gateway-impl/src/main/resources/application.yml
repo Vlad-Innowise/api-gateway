@@ -11,3 +11,4 @@ application:
       user-service: "${USER_SERVICE_URL}"
       auth-service: "${AUTH_SERVICE_URL}"
       order-service: "${ORDER_SERVICE_URL}"
+      payment-service: "${PAYMENT_SERVICE_URL}"

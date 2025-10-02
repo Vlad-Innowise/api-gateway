@@ -50,6 +50,13 @@ public class RoutesConfig {
                                .filters(f -> f.stripPrefix(2))
                                .uri(serviceProperty.getServices().get(ORDER_SERVICE_PROPERTY)))
 
+                      .route("payment-service", r ->
+                              r.path("/api/v1/payments", "/api/v1/payments/**")
+                               .and()
+                               .method(HttpMethod.GET, HttpMethod.HEAD, HttpMethod.OPTIONS)
+                               .filters(f -> f.stripPrefix(2))
+                               .uri(serviceProperty.getServices().get(ORDER_SERVICE_PROPERTY)))
+
                       .build();
     }
 
