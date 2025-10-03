@@ -2,8 +2,11 @@ services:
 
   api-gateway:
     build: ./api-gateway-impl
+    image: "ghcr.io/${GITHUB_INNOWISE_USERNAME}/${API_GATEWAY_SERVICE_GH_REPO_NAME}/${API_GATEWAY_SERVICE_IMAGE_NAME}"
     environment:
       SPRING_PROFILES_ACTIVE: "${APPLICATION_PROFILE}"
+      GITHUB_INNOWISE_USERNAME: "${GITHUB_INNOWISE_USERNAME}"
+      GITHUB_INNOWISE_TOKEN: "${GITHUB_INNOWISE_TOKEN}"
       AUTH_SERVICE_URL: 'http://auth-service:8080'
       USER_SERVICE_URL: 'http://user-service:8080'
       ORDER_SERVICE_URL: 'http://order-service:8080'
