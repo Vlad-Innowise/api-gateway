@@ -5,6 +5,21 @@ spring:
   profiles:
     active: "${APPLICATION_PROFILE}"
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: 'health,info'
+  endpoint:
+    health:
+      probes:
+        enabled: 'true'
+  health:
+    livenessState:
+      enabled: 'true'
+    readinessState:
+      enabled: 'true'
+
 application:
   gateway:
     services:
