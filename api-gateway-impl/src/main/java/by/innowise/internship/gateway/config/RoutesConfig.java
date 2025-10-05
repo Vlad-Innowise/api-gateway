@@ -8,6 +8,7 @@ import org.springframework.http.HttpMethod;
 
 import static by.innowise.internship.gateway.config.InternalServiceProperties.AUTH_SERVICE_PROPERTY;
 import static by.innowise.internship.gateway.config.InternalServiceProperties.ORDER_SERVICE_PROPERTY;
+import static by.innowise.internship.gateway.config.InternalServiceProperties.PAYMENT_SERVICE_PROPERTY;
 import static by.innowise.internship.gateway.config.InternalServiceProperties.USER_SERVICE_PROPERTY;
 
 @Configuration
@@ -55,7 +56,7 @@ public class RoutesConfig {
                                .and()
                                .method(HttpMethod.GET, HttpMethod.HEAD, HttpMethod.OPTIONS)
                                .filters(f -> f.stripPrefix(2))
-                               .uri(serviceProperty.getServices().get(ORDER_SERVICE_PROPERTY)))
+                               .uri(serviceProperty.getServices().get(PAYMENT_SERVICE_PROPERTY)))
 
                       .build();
     }
