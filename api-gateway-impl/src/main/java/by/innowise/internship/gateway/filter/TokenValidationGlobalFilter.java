@@ -36,7 +36,11 @@ import static by.innowise.internship.gateway.config.InternalServiceProperties.AU
 public class TokenValidationGlobalFilter implements GlobalFilter, Ordered {
 
     private static final String JWT_AUTH_HEADER_PREFIX = "Bearer ";
-    private static final List<String> WHITELIST_PATHS = List.of("/api/v1/auth/login", "/api/v1/auth/register");
+    private static final List<String> WHITELIST_PATHS =
+            List.of("/api/v1/auth/login",
+                    "/api/v1/auth/register",
+                    "/api/v1/token/refresh");
+
     private final WebClient webClient;
     private final InternalServiceProperties serviceProperty;
     private final AntPathMatcher matcher = new AntPathMatcher();
@@ -100,7 +104,7 @@ public class TokenValidationGlobalFilter implements GlobalFilter, Ordered {
                                               ))
                         )
                         .toBodilessEntity()
-                        .flatMap(respEntity->{
+                        .flatMap(respEntity -> {
                             log.info("Token validation was successful");
                             return chain.filter(exchange);
                         });
