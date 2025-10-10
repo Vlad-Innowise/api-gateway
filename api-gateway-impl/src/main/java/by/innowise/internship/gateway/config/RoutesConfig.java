@@ -53,8 +53,6 @@ public class RoutesConfig {
 
                       .route("payment-service", r ->
                               r.path("/api/v1/payments", "/api/v1/payments/**")
-                               .and()
-                               .method(HttpMethod.GET, HttpMethod.HEAD, HttpMethod.OPTIONS)
                                .filters(f -> f.stripPrefix(2))
                                .uri(serviceProperty.getServices().get(PAYMENT_SERVICE_PROPERTY)))
 
