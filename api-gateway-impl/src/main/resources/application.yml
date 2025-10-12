@@ -35,3 +35,7 @@ application:
       auth-service: "${AUTH_SERVICE_URL}"
       order-service: "${ORDER_SERVICE_URL}"
       payment-service: "${PAYMENT_SERVICE_URL}"
+  cors:
+    allowed-origins:
+      - "http://localhost:5173"
+      - "http://innowise.by"
