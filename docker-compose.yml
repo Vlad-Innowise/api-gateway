@@ -23,6 +23,8 @@ services:
       - 'auth-service'
       - 'user-service'
       - 'order-service'
+    networks:
+      - "innowise-net"
 
   auth-service:
     image: "ghcr.io/${GITHUB_INNOWISE_USERNAME}/${AUTH_SERVICE_GH_REPO_NAME}/${AUTH_SERVICE_IMAGE_NAME}"
@@ -46,6 +48,8 @@ services:
     restart: 'always'
     depends_on:
       - 'auth-service-db'
+    networks:
+      - "innowise-net"
 
   user-service:
     image: "ghcr.io/${GITHUB_INNOWISE_USERNAME}/${USER_SERVICE_GH_REPO_NAME}/${USER_SERVICE_IMAGE_NAME}"
@@ -72,6 +76,8 @@ services:
     depends_on:
       - 'user-service-db'
       - 'redis-db'
+    networks:
+      - "innowise-net"
 
   order-service:
     image: "ghcr.io/${GITHUB_INNOWISE_USERNAME}/${ORDER_SERVICE_GH_REPO_NAME}/${ORDER_SERVICE_IMAGE_NAME}"
@@ -98,6 +104,8 @@ services:
     depends_on:
       - 'order-service-db'
       - 'kafka'
+    networks:
+      - "innowise-net"
 
   payment-service:
     image: "ghcr.io/${GITHUB_INNOWISE_USERNAME}/${PAYMENT_SERVICE_GH_REPO_NAME}/${PAYMENT_SERVICE_IMAGE_NAME}"
@@ -121,6 +129,8 @@ services:
     depends_on:
       - 'payment-service-db'
       - 'kafka'
+    networks:
+      - "innowise-net"
 
   auth-service-db:
     image: 'postgres:17-alpine'
@@ -133,6 +143,8 @@ services:
     volumes:
       - 'pg-auth-service-vol:/var/lib/postgresql/data'
     restart: 'always'
+    networks:
+      - "innowise-net"
 
   user-service-db:
     image: 'postgres:17-alpine'
@@ -145,6 +157,8 @@ services:
     volumes:
       - 'pg-user-service-vol:/var/lib/postgresql/data'
     restart: 'always'
+    networks:
+      - "innowise-net"
 
   redis-db:
     image: 'redis:7.2.10-alpine'
@@ -153,6 +167,8 @@ services:
     volumes:
       - 'redis-user-service-vol:/data'
     restart: 'always'
+    networks:
+      - "innowise-net"
 
   order-service-db:
     image: 'postgres:17-alpine'
@@ -165,6 +181,8 @@ services:
     volumes:
       - 'pg-order-service-vol:/var/lib/postgresql/data'
     restart: 'always'
+    networks:
+      - "innowise-net"
 
   payment-service-db:
     image: 'mongo:7.0.24-jammy'
@@ -175,6 +193,8 @@ services:
     volumes:
       - 'mongo-payment-service-vol:/data/db'
     restart: 'always'
+    networks:
+      - "innowise-net"
 
   kafka:
     image: 'confluentinc/cp-kafka:7.9.3'
@@ -201,6 +221,8 @@ services:
       - "29092:29092"
     volumes:
       - 'kafka-data-vol:/var/lib/kafka/data'
+    networks:
+      - "innowise-net"
 
 
 volumes:
@@ -210,3 +232,8 @@ volumes:
   redis-user-service-vol:
   mongo-payment-service-vol:
   kafka-data-vol:
+
+networks:
+  innowise-net:
+    name: "innowise-net"
+    driver: "bridge"
