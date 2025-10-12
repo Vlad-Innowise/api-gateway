@@ -16,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -27,7 +26,6 @@ import static by.innowise.internship.gateway.config.InternalServiceProperties.AU
 import static by.innowise.internship.gateway.config.InternalServiceProperties.USER_SERVICE_PROPERTY;
 
 @RestController
-@RequestMapping("/api/v1/users")
 @Slf4j
 @RequiredArgsConstructor
 public class UserRegistrationConroller {
@@ -37,7 +35,7 @@ public class UserRegistrationConroller {
     private final InternalServiceProperties serviceProperty;
     private final ObjectMapper objectMapper;
 
-    @PostMapping
+    @PostMapping("/api/v1/users/register")
     public Mono<ResponseEntity<Object>> register(@RequestBody UserRegistrationDto registrationDto) {
 
         String authServiceUri = serviceProperty.getServices().get(AUTH_SERVICE_PROPERTY) + "/auth/register";

@@ -21,8 +21,8 @@ public class RoutesConfig {
                       .route("user-service-users", r ->
                               r.path("/api/v1/users", "/api/v1/users/**")
                                .and()
-                               .method(HttpMethod.GET, HttpMethod.PUT, HttpMethod.DELETE, HttpMethod.HEAD,
-                                       HttpMethod.OPTIONS)
+                               .method(HttpMethod.GET, HttpMethod.PUT, HttpMethod.PATCH, HttpMethod.DELETE,
+                                       HttpMethod.HEAD, HttpMethod.OPTIONS)
                                .filters(f -> f.stripPrefix(2))
                                .uri(serviceProperty.getServices().get(USER_SERVICE_PROPERTY)))
 
