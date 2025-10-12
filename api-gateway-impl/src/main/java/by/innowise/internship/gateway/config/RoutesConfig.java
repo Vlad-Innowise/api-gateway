@@ -1,9 +1,12 @@
 package by.innowise.internship.gateway.config;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 
 import static by.innowise.internship.gateway.config.InternalServiceProperties.AUTH_SERVICE_PROPERTY;
@@ -11,6 +14,7 @@ import static by.innowise.internship.gateway.config.InternalServiceProperties.OR
 import static by.innowise.internship.gateway.config.InternalServiceProperties.PAYMENT_SERVICE_PROPERTY;
 import static by.innowise.internship.gateway.config.InternalServiceProperties.USER_SERVICE_PROPERTY;
 
+@Slf4j
 @Configuration
 public class RoutesConfig {
 
@@ -57,6 +61,26 @@ public class RoutesConfig {
                                .uri(serviceProperty.getServices().get(PAYMENT_SERVICE_PROPERTY)))
 
                       .build();
+    }
+
+    @Bean
+    @Order(-200)
+    public GlobalFilter globalLoggingFilter() {
+        return (exchange, chain) -> {
+            String path = exchange.getRequest().getURI().getPath();
+            String method = exchange.getRequest().getMethod().name();
+
+            log.info("[Gateway]: Incoming request: {} {}", method, path);
+
+            return chain.filter(exchange)
+                        .doOnSuccess(done ->
+                                             log.info("[Gateway]: Passed through route for {} {}", method, path)
+                        )
+                        .doOnError(err ->
+                                           log.error("[Gateway]: Error while routing {} {}: {}", method, path,
+                                                     err.getMessage())
+                        );
+        };
     }
 
 }

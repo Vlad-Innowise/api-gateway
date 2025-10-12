@@ -9,7 +9,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: 'health,info'
+        include: 'health,info,httpexchanges'
   endpoint:
     health:
       probes:
@@ -19,6 +19,14 @@ management:
       enabled: 'true'
     readinessState:
       enabled: 'true'
+    httpexchanges:
+      enabled: 'true'
+
+logging:
+  level:
+    org.springframework.web: 'DEBUG'
+    org.springframework.web.reactive.result.method.annotation.RequestMappingHandlerMapping: 'TRACE'
+    org.springframework.cloud.gateway.handler.RoutePredicateHandlerMapping: 'TRACE'
 
 application:
   gateway:
